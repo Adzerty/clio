@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://citxnh1jk36lg"]
+[gd_scene load_steps=8 format=3 uid="uid://citxnh1jk36lg"]
 
 [ext_resource type="Script" uid="uid://bcxjtw01gtt2c" path="res://insect.gd" id="1_1kt6d"]
 [ext_resource type="Texture2D" uid="uid://dbq8dvjqhmcr2" path="res://assets/sprites/insects/insect_a_sheet.png" id="1_2jekt"]
+[ext_resource type="Texture2D" uid="uid://yy3g216mvy6u" path="res://assets/shadow.png" id="3_rjq06"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1kt6d"]
 
@@ -43,7 +44,9 @@ _data = {
 &"flap": SubResource("Animation_1kt6d")
 }
 
-[node name="Insect" type="Area2D"]
+[node name="Insect" type="Area2D" groups=["insects"]]
+z_index = 10
+scale = Vector2(0.5, 0.5)
 script = ExtResource("1_1kt6d")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
@@ -58,3 +61,9 @@ libraries = {
 &"": SubResource("AnimationLibrary_rjq06")
 }
 autoplay = "flap"
+
+[node name="Shadow" type="Sprite2D" parent="."]
+z_index = -1
+position = Vector2(0, 20)
+scale = Vector2(0.5625, 0.25)
+texture = ExtResource("3_rjq06")

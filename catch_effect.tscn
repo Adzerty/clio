@@ -1,0 +1,23 @@
+[gd_scene load_steps=3 format=3 uid="uid://b3dbivwmnl1p7"]
+
+[ext_resource type="Script" uid="uid://mg05v3uin4jn" path="res://catch_effect.gd" id="1_5s63j"]
+
+[sub_resource type="Curve" id="Curve_vgpef"]
+_data = [Vector2(0.0169491, 0.981241), 0.0, 0.0, 0, 0, Vector2(1, 0), -3.23, 0.0, 0, 0]
+point_count = 2
+
+[node name="CatchEffect" type="CPUParticles2D"]
+emitting = false
+amount = 12
+lifetime = 0.4
+one_shot = true
+explosiveness = 1.0
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_max = 30.0
+scale_amount_min = 0.3
+scale_amount_curve = SubResource("Curve_vgpef")
+color = Color(1, 1, 1, 0.784314)
+hue_variation_min = -1.0
+hue_variation_max = 1.0
+script = ExtResource("1_5s63j")
