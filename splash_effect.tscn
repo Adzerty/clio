@@ -1,0 +1,27 @@
+[gd_scene load_steps=4 format=3 uid="uid://db0gulcmtefm0"]
+
+[ext_resource type="Script" uid="uid://blbsxxx00w47i" path="res://splash_effect.gd" id="1_g3guq"]
+
+[sub_resource type="Curve" id="Curve_kxmqu"]
+_data = [Vector2(0.0141777, 0.994844), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Gradient" id="Gradient_g3guq"]
+offsets = PackedFloat32Array(0, 0.291096, 0.517123, 0.671233)
+colors = PackedColorArray(0.2387, 0.45122, 0.77, 1, 0.309985, 0.502605, 0.791536, 1, 0.319523, 0.509481, 0.794418, 1, 1, 1, 1, 1)
+
+[node name="SplashEffect" type="CPUParticles2D"]
+emitting = false
+amount = 36
+lifetime = 0.4
+one_shot = true
+explosiveness = 0.21
+randomness = 0.38
+lifetime_randomness = 0.74
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_max = 40.0
+scale_amount_max = 3.0
+scale_amount_curve = SubResource("Curve_kxmqu")
+color_ramp = SubResource("Gradient_g3guq")
+script = ExtResource("1_g3guq")
