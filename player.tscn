@@ -1,9 +1,10 @@
-[gd_scene load_steps=23 format=3 uid="uid://6yqirheogx4g"]
+[gd_scene load_steps=25 format=3 uid="uid://6yqirheogx4g"]
 
 [ext_resource type="Script" uid="uid://dlou5aqpcjnen" path="res://player.gd" id="1_onrkg"]
 [ext_resource type="Texture2D" uid="uid://dohcfe2oh7lmp" path="res://assets/sprites/player_a_complete_sheet.png" id="2_i3pqv"]
 [ext_resource type="Texture2D" uid="uid://yy3g216mvy6u" path="res://assets/shadow.png" id="3_i3pqv"]
 [ext_resource type="Texture2D" uid="uid://bfwf66n6xtxfp" path="res://assets/sprites/tools/Hook_sprite.png" id="4_hqtel"]
+[ext_resource type="Script" uid="uid://ckxgx00qrptga" path="res://hook.gd" id="4_sweqy"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_onrkg"]
 size = Vector2(12, 2)
@@ -437,6 +438,9 @@ _data = {
 [sub_resource type="CircleShape2D" id="CircleShape2D_i3pqv"]
 radius = 17.0
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hqtel"]
+size = Vector2(8, 9)
+
 [node name="Player" type="CharacterBody2D"]
 z_index = 10
 script = ExtResource("1_onrkg")
@@ -484,7 +488,10 @@ shape = SubResource("CircleShape2D_i3pqv")
 [node name="WaterDetector" type="RayCast2D" parent="."]
 target_position = Vector2(0, 40)
 
-[node name="Hook" type="Sprite2D" parent="."]
+[node name="Hook" type="Area2D" parent="." groups=["hooks"]]
+script = ExtResource("4_sweqy")
+
+[node name="Sprite" type="Sprite2D" parent="Hook"]
 texture = ExtResource("4_hqtel")
 
 [node name="FishingLine" type="Line2D" parent="Hook"]
@@ -494,6 +501,10 @@ position = Vector2(-4, -6)
 points = PackedVector2Array(4, 34)
 width = 1.0
 default_color = Color(0.6, 0.6, 0.6, 0.631373)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hook"]
+position = Vector2(0, 1.5)
+shape = SubResource("RectangleShape2D_hqtel")
 
 [connection signal="area_entered" from="NetArea" to="." method="_on_net_area_area_entered"]
 [connection signal="area_exited" from="NetArea" to="." method="_on_net_area_area_exited"]

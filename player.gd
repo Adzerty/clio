@@ -15,12 +15,16 @@ var is_fishing = false
 var current_butterfly = null # Mémorise l'insecte à portée
 var last_dir_row = 0
 
+var is_bite_active = false
+var current_fish_hooked = null
+
 @onready var sprite = $Sprite2D 
 @onready var hand_anchor = $Sprite2D/HandAnchor
 @onready var item_sprite = $Sprite2D/HandAnchor/EquippedItemSprite
 
 @onready var water_detector = $WaterDetector
 @onready var hook = $Hook
+@onready var hook_collision = $Hook/CollisionShape2D
 @onready var fishing_line = $Hook/FishingLine
 @onready var rod_tip = $Sprite2D/HandAnchor/EquippedItemSprite/RodTip
 
@@ -136,7 +140,10 @@ func update_sprite_direction(dir: Vector2):
 func handle_action():
 	if equipped_item == Item.NONE:
 		return
-	item_sprite.hide()
+		
+	if !is_fishing:
+		item_sprite.hide()
+		
 	var tool_name = ""
 	var dir_row = sprite.frame_coords.y % 3
 	
@@ -151,7 +158,9 @@ func handle_action():
 			Item.NET:
 				check_net_capture()
 			Item.FISHING_ROD:
-				if is_fishing:
+				if is_bite_active:
+					reel_in_fish()
+				elif is_fishing:
 					stop_fishing()
 				else:
 					start_fishing()
@@ -241,6 +250,8 @@ func start_fishing():
 		hook.global_position = global_position + (water_direction() * CAST_DISTANCE)
 		hook.show()
 		
+		hook_collision.disabled = false
+		
 		var effect = SPLASH_EFFECT.instantiate()
 		effect.global_position = hook.global_position
 		get_tree().current_scene.add_child(effect)
@@ -266,10 +277,54 @@ func water_direction() -> Vector2:
 func stop_fishing():
 	print("Pêche terminée.")
 	hook.hide()
+	hook_collision.set_deferred("disabled", true)
 	fishing_line.hide()
 	is_fishing = false
 	is_busy = false
 	stop_anim_tool()
+	
+func on_fish_bite(fish_node):
+	if not is_fishing: return
+	
+	is_bite_active = true
+	current_fish_hooked = fish_node
+	print("VITE ! APPUIE SUR ESPACE !")
+	
+	# On lance le compte à rebours de 2 secondes
+	await get_tree().create_timer(2.0).timeout
+	
+	# Si, 2 secondes plus tard, la variable est toujours "true"
+	# ça veut dire que le joueur n'a pas appuyé sur espace !
+	if is_bite_active and current_fish_hooked == fish_node:
+		fish_escapes()
+
+func reel_in_fish():
+	is_bite_active = false # On valide l'action, ce qui annule l'échec du timer
+	print("FERRÉ ! Poisson attrapé !")
+	
+	# On peut réutiliser ton effet de capture du filet !
+	if current_fish_hooked:
+		var effect = CATCH_EFFECT.instantiate()
+		effect.global_position = current_fish_hooked.global_position
+		get_tree().current_scene.add_child(effect)
+		
+		# On détruit le poisson
+		current_fish_hooked.queue_free()
+		current_fish_hooked = null
+	
+	stop_fishing() # On range la canne
+
+func fish_escapes():
+	print("Trop tard... le poisson s'est échappé !")
+	is_bite_active = false
+	
+	if current_fish_hooked:
+		# On dit au poisson de fuir
+		if current_fish_hooked.has_method("escape"):
+			current_fish_hooked.escape()
+		current_fish_hooked = null
+		
+	stop_fishing() # On range la canne (ou on la laisse dans l'eau, selon ton choix)
 
 # --- SIGNAUX DE LA ZONE NetArea ---
 # (Assure-toi de bien connecter ces signaux depuis l'éditeur Godot vers ce script)

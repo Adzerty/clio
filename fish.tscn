@@ -1,0 +1,33 @@
+[gd_scene load_steps=5 format=3 uid="uid://q6g6afvpcnny"]
+
+[ext_resource type="Script" uid="uid://ruxe4pau401i" path="res://fish.gd" id="1_hgn23"]
+[ext_resource type="Texture2D" uid="uid://l6rslcy7237l" path="res://assets/sprites/fishs/fish_a_sprite.png" id="1_xu20i"]
+[ext_resource type="PackedScene" uid="uid://ss7puph2gbvo" path="res://emote_particles.tscn" id="2_6ik3a"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_xu20i"]
+radius = 8.0
+
+[node name="Fish" type="CharacterBody2D" groups=["fishes"]]
+collision_layer = 8
+collision_mask = 4
+script = ExtResource("1_hgn23")
+
+[node name="EmoteParticles" parent="." instance=ExtResource("2_6ik3a")]
+position = Vector2(2, -1)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_xu20i")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_xu20i")
+
+[node name="VisionAnchor" type="Node2D" parent="."]
+
+[node name="VisionCone" type="Area2D" parent="VisionAnchor"]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="VisionAnchor/VisionCone"]
+position = Vector2(2, -1)
+polygon = PackedVector2Array(1, -4, 86, -17, 87, 18, 1, 5)
+
+[connection signal="area_entered" from="VisionAnchor/VisionCone" to="." method="_on_vision_cone_area_entered"]
+[connection signal="area_exited" from="VisionAnchor/VisionCone" to="." method="_on_vision_cone_area_exited"]
